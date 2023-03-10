@@ -172,4 +172,9 @@ public class CustomerFormController {
     public void BackOnAction(ActionEvent actionEvent) throws IOException {
         Navigation.navigate(Routes.DASHBOARD, pane);
     }
+
+    public void ClearOnAction(ActionEvent actionEvent) {
+        clearFields();
+        btnAdd.setText("ADD");
+    }
 }

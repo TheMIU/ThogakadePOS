@@ -15,7 +15,7 @@ public class AppInitializer extends Application {
     public void start(Stage primaryStage) throws IOException {
         primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("lk/ijse/thogakadepos/view/Dashboard.fxml"))));
         primaryStage.show();
-        primaryStage.setResizable(false);
+        //primaryStage.setResizable(false);
         primaryStage.setTitle("Dashboard Form");
     }
 }
