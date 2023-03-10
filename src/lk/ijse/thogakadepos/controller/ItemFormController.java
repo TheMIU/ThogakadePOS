@@ -11,39 +11,42 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import lk.ijse.thogakadepos.entity.Customer;
-import lk.ijse.thogakadepos.model.CustomerModel;
+import lk.ijse.thogakadepos.entity.Item;
+import lk.ijse.thogakadepos.model.ItemModel;
 import lk.ijse.thogakadepos.util.Navigation;
 import lk.ijse.thogakadepos.util.Routes;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CustomerFormController {
+public class ItemFormController {
     public AnchorPane pane;
     @FXML
-    private JFXTextField txtSearch;
+    private TableView<Item> tblItem;
 
     @FXML
-    private TableView<Customer> tblCustomer;
+    private TableColumn<?, ?> colCode;
 
     @FXML
-    private TableColumn<?, ?> colID;
+    private TableColumn<?, ?> colDis;
 
     @FXML
-    private TableColumn<?, ?> colName;
+    private TableColumn<?, ?> colUnitPrice;
 
     @FXML
-    private TableColumn<?, ?> colAddress;
+    private TableColumn<?, ?> colQTY;
 
     @FXML
-    private JFXTextField txtID;
+    private JFXTextField txtCode;
 
     @FXML
-    private JFXTextField txtName;
+    private JFXTextField txtDis;
 
     @FXML
-    private JFXTextField txtAddress;
+    private JFXTextField txtPrice;
+
+    @FXML
+    private JFXTextField txtQty;
 
     @FXML
     private JFXButton btnAdd;
@@ -51,13 +54,17 @@ public class CustomerFormController {
     @FXML
     private JFXButton btnDelete;
 
+    @FXML
+    private JFXTextField txtSearch;
+
     public void initialize() {
         txtSearch.setText("");
         btnDelete.setDisable(true);
 
-        colID.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
+        colCode.setCellValueFactory(new PropertyValueFactory<>("code"));
+        colDis.setCellValueFactory(new PropertyValueFactory<>("description"));
+        colUnitPrice.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
+        colQTY.setCellValueFactory(new PropertyValueFactory<>("qtyOnHand"));
 
         // get search bar typed text
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -66,11 +73,12 @@ public class CustomerFormController {
         });
 
         // get selected item
-        tblCustomer.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        tblItem.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                txtID.setText(String.valueOf(newValue.getId()));
-                txtName.setText(newValue.getName());
-                txtAddress.setText(newValue.getAddress());
+                txtCode.setText(String.valueOf(newValue.getCode()));
+                txtDis.setText(newValue.getDescription());
+                txtPrice.setText(String.valueOf(newValue.getUnitPrice()));
+                txtQty.setText(String.valueOf(newValue.getQtyOnHand()));
 
                 btnAdd.setText("UPDATE");
                 btnDelete.setDisable(false);
@@ -84,42 +92,43 @@ public class CustomerFormController {
     }
 
     private void clearFields() {
-        txtID.clear();
-        txtName.clear();
-        txtAddress.clear();
+        txtCode.clear();
+        txtDis.clear();
+        txtPrice.clear();
+        txtQty.clear();
     }
 
     private void loadAll(String value) {
-        ObservableList<Customer> list = FXCollections.observableArrayList();
+        ObservableList<Item> list = FXCollections.observableArrayList();
 
         try {
-            ArrayList<Customer> customerData = CustomerModel.getAll();
-            for (Customer c : customerData) {
-                if (c.getName().contains(value) || c.getAddress().contains(value) || String.valueOf(c.getId()).contains(value)) {
-                    Customer customer = new Customer(c.getId(), c.getName(), c.getAddress());
-                    list.add(customer);
+            ArrayList<Item> itemData = ItemModel.getAll();
+            for (Item i : itemData) {
+                if (i.getDescription().contains(value) || String.valueOf(i.getQtyOnHand()).contains(value) || String.valueOf(i.getCode()).contains(value) || String.valueOf(i.getUnitPrice()).contains(value)) {
+                    Item item = new Item(i.getCode(), i.getDescription(), i.getUnitPrice(), i.getQtyOnHand());
+                    list.add(item);
                 }
             }
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, e.toString());
         }
 
-        tblCustomer.setItems(list);
+        tblItem.setItems(list);
     }
 
     @FXML
     public void AddOnAction(ActionEvent event) {
         try {
+            int code = Integer.parseInt(txtCode.getText());
+            String description = txtDis.getText();
+            double unitPrice = Double.parseDouble(txtPrice.getText());
+            int qtyOnHand = Integer.parseInt(txtQty.getText());
 
-            String name = txtName.getText();
-            String address = txtAddress.getText();
-            int id = Integer.parseInt(txtID.getText());
-
-            Customer customer = new Customer(id, name, address);
+            Item item = new Item(code, description, unitPrice, qtyOnHand);
 
             // ADD
             if (btnAdd.getText().equals("ADD")) {
-                boolean isAdded = CustomerModel.add(customer);
+                boolean isAdded = ItemModel.add(item);
                 if (isAdded) {
                     new Alert(Alert.AlertType.INFORMATION, "Added").show();
                 } else {
@@ -128,7 +137,7 @@ public class CustomerFormController {
             }
             // UPDATE
             else if (btnAdd.getText().equals("UPDATE")) {
-                boolean isUpdated = CustomerModel.update(customer);
+                boolean isUpdated = ItemModel.update(item);
                 if (isUpdated) {
                     new Alert(Alert.AlertType.INFORMATION, "Updated").show();
                 } else {
@@ -148,12 +157,14 @@ public class CustomerFormController {
     @FXML
     void DeleteOnAction(ActionEvent event) {
         try {
-            String name = txtName.getText();
-            String address = txtAddress.getText();
-            int id = Integer.parseInt(txtID.getText());
+            int code = Integer.parseInt(txtCode.getText());
+            String description = txtDis.getText();
+            double unitPrice = Double.parseDouble(txtPrice.getText());
+            int qtyOnHand = Integer.parseInt(txtQty.getText());
 
-            Customer customer = new Customer(id, name, address);
-            boolean isDeleted = CustomerModel.delete(customer);
+            Item item = new Item(code, description, unitPrice, qtyOnHand);
+
+            boolean isDeleted = ItemModel.delete(item);
             if (isDeleted) {
                 new Alert(Alert.AlertType.INFORMATION, "Deleted").show();
             } else {

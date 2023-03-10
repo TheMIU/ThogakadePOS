@@ -1,6 +1,7 @@
 package lk.ijse.thogakadepos.util;
 
 import lk.ijse.thogakadepos.entity.Customer;
+import lk.ijse.thogakadepos.entity.Item;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,7 +12,7 @@ public class SessionFactoryConfiguration {
     private static SessionFactoryConfiguration sessionFactoryConfiguration;
 
     private SessionFactoryConfiguration(){
-        sessionFactory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Customer.class).buildSessionFactory();
+        sessionFactory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Customer.class).addAnnotatedClass(Item.class).buildSessionFactory();
     }
 
     public static SessionFactoryConfiguration getInstance(){

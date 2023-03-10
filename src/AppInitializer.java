@@ -13,9 +13,9 @@ public class AppInitializer extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("lk/ijse/thogakadepos/view/CustomerForm.fxml"))));
+        primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("lk/ijse/thogakadepos/view/Dashboard.fxml"))));
         primaryStage.show();
         primaryStage.setResizable(false);
-        primaryStage.setTitle("Customer Form");
+        primaryStage.setTitle("Dashboard Form");
     }
 }
