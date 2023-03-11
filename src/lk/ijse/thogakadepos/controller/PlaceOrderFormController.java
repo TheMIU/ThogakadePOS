@@ -3,15 +3,15 @@ package lk.ijse.thogakadepos.controller;
 import com.jfoenix.controls.JFXComboBox;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import lk.ijse.thogakadepos.model.OrderModel;
 import lk.ijse.thogakadepos.util.Navigation;
 import lk.ijse.thogakadepos.util.Routes;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDate;
 
 public class PlaceOrderFormController {
     @FXML
@@ -65,12 +65,23 @@ public class PlaceOrderFormController {
     @FXML
     private TableColumn<?, ?> colAction;
 
+    public void initialize(){
+        lblOrderDate.setText(LocalDate.now().toString());
+        lblOrderId.setText(getNextOrderID());
+    }
+
+    private String getNextOrderID() {
+        try {
+            String orderId = String.valueOf(OrderModel.generateNextOrderId());
+            return orderId;
+        } catch (SQLException | ClassNotFoundException e) {
+            new Alert(Alert.AlertType.ERROR,e.toString()).show();
+            return null;
+        }
+    }
+
     @FXML
     void btnAddToCartOnAction(ActionEvent event) {
-
-    }
-    @FXML
-    void btnNewCustomerOnAction(ActionEvent event) {
 
     }
 
@@ -92,6 +103,11 @@ public class PlaceOrderFormController {
     @FXML
     void btnBackOnAction(ActionEvent event) throws IOException {
         Navigation.navigate(Routes.DASHBOARD, pane);
+    }
+
+    @FXML
+    void btnNewCustomerOnAction(ActionEvent event) throws IOException {
+        Navigation.navigate(Routes.CUSTOMER, pane);
     }
 
 }

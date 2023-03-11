@@ -22,7 +22,7 @@
                 <Font name="System Bold" size="15.0" />
             </font>
         </Label>
-        <Label fx:id="lblOrderId" layoutX="99.0" layoutY="61.0" textFill="#278d7f">
+        <Label fx:id="lblOrderId" layoutX="99.0" layoutY="61.0" prefHeight="26.0" prefWidth="91.0" textFill="#278d7f">
             <font>
                 <Font name="System Bold" size="17.0" />
             </font>
