@@ -1,10 +1,14 @@
 package lk.ijse.thogakadepos.controller;
 
 import com.jfoenix.controls.JFXComboBox;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import lk.ijse.thogakadepos.entity.Customer;
+import lk.ijse.thogakadepos.model.CustomerModel;
 import lk.ijse.thogakadepos.model.OrderModel;
 import lk.ijse.thogakadepos.util.Navigation;
 import lk.ijse.thogakadepos.util.Routes;
@@ -12,6 +16,7 @@ import lk.ijse.thogakadepos.util.Routes;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class PlaceOrderFormController {
     @FXML
@@ -24,7 +29,7 @@ public class PlaceOrderFormController {
     private Label lblOrderDate;
 
     @FXML
-    private JFXComboBox<?> cmbCustomerId;
+    private JFXComboBox<String> cmbCustomerId;
 
     @FXML
     private Label lblCustomerName;
@@ -68,6 +73,7 @@ public class PlaceOrderFormController {
     public void initialize(){
         lblOrderDate.setText(LocalDate.now().toString());
         lblOrderId.setText(getNextOrderID());
+        loadCustomerIds();
     }
 
     private String getNextOrderID() {
@@ -77,6 +83,20 @@ public class PlaceOrderFormController {
         } catch (SQLException | ClassNotFoundException e) {
             new Alert(Alert.AlertType.ERROR,e.toString()).show();
             return null;
+        }
+    }
+
+    private void loadCustomerIds() {
+        try {
+            ObservableList<String> observableList = FXCollections.observableArrayList();
+            ArrayList<Customer> idList = CustomerModel.loadCustomerIds();
+
+            for (Customer c : idList) {
+                observableList.add(String.valueOf(c.getId()));
+            }
+            cmbCustomerId.setItems(observableList);
+        } catch (Exception e) {
+            new Alert(Alert.AlertType.ERROR,e.toString()).show();
         }
     }
 
